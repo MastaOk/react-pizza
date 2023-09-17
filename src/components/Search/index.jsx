@@ -1,29 +1,35 @@
 import React from "react";
 import styles from "./Search.module.scss";
-import { useContext } from "react";
-import { SearchContext } from "../../App";
 import debounce from "lodash.debounce";
+import {
+  setSearchValue,
+  setDisplayedSearchValue,
+} from "../../Redux/slices/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Search() {
-  const [value, setValue] = React.useState("");
-  const { setSearchValue } = useContext(SearchContext);
+  const dispatch = useDispatch();
+  const displayedSearchValue = useSelector(
+    (state) => state.filter.displayedSearchValue
+  );
+
   const inputRef = React.useRef();
 
   const onClickClear = () => {
-    setSearchValue("");
-    setValue("");
+    dispatch(setSearchValue(""));
+    dispatch(setDisplayedSearchValue(""));
     inputRef.current.focus();
   };
 
   const updateSearchValue = React.useCallback(
     debounce((value) => {
-      setSearchValue(value);
+      dispatch(setSearchValue(value));
     }, 0),
     []
   );
 
   const onChangeInput = (event) => {
-    setValue(event.target.value);
+    dispatch(setDisplayedSearchValue(event.target.value));
     updateSearchValue(event.target.value);
   };
 
@@ -41,12 +47,12 @@ function Search() {
       </svg>
       <input
         ref={inputRef}
-        value={value}
+        value={displayedSearchValue}
         onChange={onChangeInput}
         className={styles.input}
         placeholder='Поиск пиццы...'
       />
-      {value && (
+      {displayedSearchValue && (
         <svg
           onClick={() => onClickClear()}
           className={styles.clearIcon}

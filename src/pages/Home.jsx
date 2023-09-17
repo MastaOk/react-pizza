@@ -2,12 +2,11 @@ import React from "react";
 import Categories from "../components/Categories";
 import Sort, { list } from "../components/Sort";
 import PizzaBlock from "../components/PizzaBlock";
-import { useState, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCategoryId, setFilters } from "../Redux/slices/filterSlice";
+import { fetchPizzas } from "../Redux/slices/pizzaSlice";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import Pagination from "../components/Pagination";
-import { SearchContext } from "../App";
 import qs from "qs";
 import { useNavigate } from "react-router-dom";
 
@@ -17,32 +16,30 @@ function Home() {
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
 
-  const { categoryId, currentPage } = useSelector((state) => state.filter);
   const sortType = useSelector((state) => state.filter.sort.sortProperty);
-  const { searchValue } = useContext(SearchContext);
+  const { items, status } = useSelector((state) => state.pizza);
+  const { categoryId, currentPage, searchValue } = useSelector(
+    (state) => state.filter
+  );
 
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const getPizzas = async () => {
+    const category = categoryId > 0 ? `category=${categoryId}&` : "";
+    const search = searchValue ? `&search=${searchValue}` : "";
 
-  const fetchPizzas = () => {
-    setIsLoading(true);
-    fetch(
-      `https://64ffb07218c34dee0cd3e71c.mockapi.io/items?page=${currentPage}&limit=10&${
-        categoryId > 0 ? `category=${categoryId}&` : ""
-      }
-        &sortBy=${sortType}&order=desc`
-    )
-      .then((res) => res.json())
-      .then((json) => {
-        setItems(json);
-        setIsLoading(false);
-      });
+    dispatch(
+      fetchPizzas({
+        category,
+        search,
+        sortType,
+        currentPage,
+      })
+    );
     window.scrollTo(0, 0);
   };
 
   React.useEffect(() => {
     if (!isSearch.current) {
-      fetchPizzas();
+      getPizzas();
     }
     isSearch.current = false;
   }, [categoryId, sortType, currentPage]);
@@ -96,7 +93,19 @@ function Home() {
         <Sort />
       </div>
       <h2 className='content__title'>Все пиццы</h2>
-      <div className='content__items'>{isLoading ? skeletons : pizzas}</div>
+      {status === "error" ? (
+        <div className='content__error-info'>
+          <h2>Произошла ошибка 😕</h2>
+          <p>
+            К сожалени, не удалось получить питци, попробуйте повторить попытку
+            позже.
+          </p>
+        </div>
+      ) : (
+        <div className='content__items'>
+          {status === "loading" ? skeletons : pizzas}
+        </div>
+      )}
       <Pagination />
     </div>
   );

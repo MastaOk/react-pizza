@@ -4,6 +4,10 @@ import Search from "./Search";
 import { setFilters } from "../Redux/slices/filterSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { initialState } from "../Redux/slices/filterSlice";
+import {
+  setSearchValue,
+  setDisplayedSearchValue,
+} from "../Redux/slices/filterSlice";
 
 function Header() {
   const dispatch = useDispatch();
@@ -15,7 +19,11 @@ function Header() {
         <Link to='/'>
           <div
             className='header__logo'
-            onClick={() => dispatch(setFilters(initialState))}
+            onClick={() => {
+              dispatch(setSearchValue(""));
+              dispatch(setFilters(initialState));
+              dispatch(setDisplayedSearchValue(""));
+            }}
           >
             <img width='38' src={logoSvg} alt='Pizza logo' />
             <div>
