@@ -1,15 +1,25 @@
 import logoSvg from "../assets/img/pizza-logo.svg";
 import { Link } from "react-router-dom";
 import Search from "./Search";
+import { setFilters } from "../Redux/slices/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { initialState } from "../Redux/slices/filterSlice";
+
 function Header() {
+  const dispatch = useDispatch();
+  const { items, totalPrice } = useSelector((state) => state.cart);
+  const totalCount = items.reduce((sum, item) => sum + item.count, 0);
   return (
     <div className='header'>
       <div className='container'>
         <Link to='/'>
-          <div className='header__logo'>
+          <div
+            className='header__logo'
+            onClick={() => dispatch(setFilters(initialState))}
+          >
             <img width='38' src={logoSvg} alt='Pizza logo' />
             <div>
-              <h1>React Pizza</h1>
+              <h1>Pizza</h1>
               <p>самая вкусная пицца во вселенной</p>
             </div>
           </div>
@@ -17,7 +27,7 @@ function Header() {
         <Search />
         <div className='header__cart'>
           <Link to='/cart' className='button button--cart'>
-            <span>520 ₽</span>
+            <span>{totalPrice} ₽</span>
             <div className='button__delimiter'></div>
             <svg
               width='18'
@@ -48,7 +58,7 @@ function Header() {
                 strokeLinejoin='round'
               />
             </svg>
-            <span>3</span>
+            <span>{totalCount}</span>
           </Link>
         </div>
       </div>
