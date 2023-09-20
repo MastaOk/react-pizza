@@ -2,7 +2,8 @@ import React from "react";
 import Categories from "../components/Categories";
 import Sort, { list } from "../components/Sort";
 import PizzaBlock from "../components/PizzaBlock";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "../Redux/store";
 import {
   selectFilter,
   selectSortProperty,
@@ -15,7 +16,7 @@ import qs from "qs";
 import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
@@ -29,7 +30,6 @@ const Home: React.FC = () => {
     const search = searchValue ? `&search=${searchValue}` : "";
 
     dispatch(
-      //@ts-ignore
       fetchPizzas({
         category,
         search,
