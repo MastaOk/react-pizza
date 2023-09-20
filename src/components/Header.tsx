@@ -21,18 +21,18 @@ const Header: React.FC = () => {
   );
 
   return (
-    <div className='header'>
-      <div className='container'>
-        <Link to='/'>
+    <div className="header">
+      <div className="container">
+        <Link to="/">
           <div
-            className='header__logo'
+            className="header__logo"
             onClick={() => {
               dispatch(setSearchValue(""));
               dispatch(setFilters(initialState));
               dispatch(setDisplayedSearchValue(""));
             }}
           >
-            <img width='38' src={logoSvg} alt='Pizza logo' />
+            <img width="38" src={logoSvg} alt="Pizza logo" />
             <div>
               <h1>Pizza</h1>
               <p>самая вкусная пицца во вселенной</p>
@@ -40,8 +40,9 @@ const Header: React.FC = () => {
           </div>
         </Link>
         <Search />
-        <CartButton />
+        <div className="header__emptyBlock"></div>
       </div>
+      <CartButton />
     </div>
   );
 };
