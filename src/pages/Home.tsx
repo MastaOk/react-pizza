@@ -3,30 +3,33 @@ import Categories from "../components/Categories";
 import Sort, { list } from "../components/Sort";
 import PizzaBlock from "../components/PizzaBlock";
 import { useSelector, useDispatch } from "react-redux";
-import { setCategoryId, setFilters } from "../Redux/slices/filterSlice";
-import { fetchPizzas } from "../Redux/slices/pizzaSlice";
+import {
+  selectFilter,
+  selectSortProperty,
+  setFilters,
+} from "../Redux/slices/filterSlice";
+import { fetchPizzas, selectPizza } from "../Redux/slices/pizzaSlice";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import Pagination from "../components/Pagination";
 import qs from "qs";
 import { useNavigate } from "react-router-dom";
 
-function Home() {
+const Home: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
 
-  const sortType = useSelector((state) => state.filter.sort.sortProperty);
-  const { items, status } = useSelector((state) => state.pizza);
-  const { categoryId, currentPage, searchValue } = useSelector(
-    (state) => state.filter
-  );
+  const sortType = useSelector(selectSortProperty);
+  const { items, status } = useSelector(selectPizza);
+  const { categoryId, currentPage, searchValue } = useSelector(selectFilter);
 
   const getPizzas = async () => {
-    const category = categoryId > 0 ? `category=${categoryId}&` : "";
+    const category = Number(categoryId) > 0 ? `category=${categoryId}&` : "";
     const search = searchValue ? `&search=${searchValue}` : "";
 
     dispatch(
+      //@ts-ignore
       fetchPizzas({
         category,
         search,
@@ -75,21 +78,18 @@ function Home() {
   ));
 
   const pizzas = items
-    .filter((obj) => {
+    .filter((obj: any) => {
       if (obj.title.toLowerCase().includes(searchValue.toLowerCase())) {
         return true;
       }
       return false;
     })
-    .map((obj) => <PizzaBlock key={obj.id} {...obj} />);
+    .map((obj: any) => <PizzaBlock key={obj.id} {...obj} />);
 
   return (
     <div className='container'>
       <div className='content__top'>
-        <Categories
-          id={categoryId}
-          onClickCategory={(id) => dispatch(setCategoryId(id))}
-        />
+        <Categories />
         <Sort />
       </div>
       <h2 className='content__title'>Все пиццы</h2>
@@ -109,6 +109,6 @@ function Home() {
       <Pagination />
     </div>
   );
-}
+};
 
 export default Home;

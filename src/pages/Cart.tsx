@@ -4,12 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import CartItem from "../components/CartItem";
 import { clearItems } from "../Redux/slices/cartSlice";
 import CartEmpty from "../components/CartEmpty";
+import { selectCart } from "../Redux/slices/cartSlice";
 
-function Cart() {
+const Cart: React.FC = () => {
   const dispatch = useDispatch();
-  const { items, totalPrice } = useSelector((state) => state.cart);
+  const { items, totalPrice } = useSelector(selectCart);
 
-  const totalCount = items.reduce((sum, item) => sum + item.count, 0);
+  const totalCount = items.reduce(
+    (sum: number, item: any) => sum + item.count,
+    0
+  );
 
   const onClickClear = () => {
     dispatch(clearItems());
@@ -96,7 +100,7 @@ function Cart() {
           </div>
         </div>
         <div className='content__items'>
-          {items.map((item, i) => (
+          {items.map((item: any, i: number) => (
             <CartItem key={i} {...item} />
           ))}
         </div>
@@ -108,7 +112,7 @@ function Cart() {
             </span>
             <span>
               {" "}
-              Сумма заказа: <b>{totalPrice} ₽</b>{" "}
+              Сумма заказа: <b>{totalPrice.toString()} ₽</b>{" "}
             </span>
           </div>
           <div className='cart__bottom-buttons'>
@@ -142,6 +146,6 @@ function Cart() {
       </div>
     </div>
   );
-}
+};
 
 export default Cart;
