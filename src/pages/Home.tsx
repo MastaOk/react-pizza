@@ -9,7 +9,7 @@ import {
   selectSortProperty,
   setFilters,
 } from "../Redux/slices/filterSlice";
-import { fetchPizzas, selectPizza } from "../Redux/slices/pizzaSlice";
+import { Pizza, fetchPizzas, selectPizza } from "../Redux/slices/pizzaSlice";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import Pagination from "../components/Pagination";
 import qs from "qs";
@@ -78,13 +78,13 @@ const Home: React.FC = () => {
   ));
 
   const pizzas = items
-    .filter((obj: any) => {
+    .filter((obj: Pizza) => {
       if (obj.title.toLowerCase().includes(searchValue.toLowerCase())) {
         return true;
       }
       return false;
     })
-    .map((obj: any) => <PizzaBlock key={obj.id} {...obj} />);
+    .map((obj: Pizza) => <PizzaBlock key={obj.id} {...obj} />);
 
   return (
     <div className='container'>

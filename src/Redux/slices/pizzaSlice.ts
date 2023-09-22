@@ -17,7 +17,7 @@ export const fetchPizzas = createAsyncThunk<Pizza[],FetchPizzaArgs>(
   }
 );
 
-type Pizza = {
+export type Pizza = {
   id:string;
   title: string;
   price: number;
